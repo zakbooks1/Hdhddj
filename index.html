@@ -6,38 +6,33 @@
 </head>
 <body>
 
-  <h1>AI Image Generator</h1>
+<h1>AI Image Generator Pro</h1>
 
-  <input type="text" id="prompt" placeholder="Describe your image...">
+<input id="prompt" placeholder="Describe your image...">
 
-  <select id="style">
-    <option value="">No Style</option>
-    <option value="anime style">Anime</option>
-    <option value="realistic">Realistic</option>
-    <option value="pixel art">Pixel Art</option>
-    <option value="cyberpunk">Cyberpunk</option>
-  </select>
+<select id="style">
+  <option value="">No Style</option>
+  <option value="anime style">Anime</option>
+  <option value="realistic">Realistic</option>
+  <option value="cyberpunk">Cyberpunk</option>
+  <option value="pixel art">Pixel Art</option>
+</select>
 
-  <br>
-  <button onclick="generateImage()">Generate</button>
+<br>
 
-  <p id="status"></p>
+<input type="file" id="imgUpload" accept="image/*">
 
-  <div class="main">
-    <img id="result">
-    <br>
-    <button onclick="downloadImage()">Download</button>
-  </div>
+<br>
 
-  <h3>🎲 Random Ideas</h3>
-  <div id="suggestions"></div>
+<button onclick="generate()">Generate</button>
 
-  <h3>🖼️ Image-to-Image</h3>
-  <input type="file" id="imgUpload" accept="image/*">
+<p id="status"></p>
 
-  <h2>History</h2>
-  <div id="gallery"></div>
+<img id="result">
 
-  <script src="script.js"></script>
+<h3>🎲 Ideas</h3>
+<div id="ideas"></div>
+
+<script src="script.js"></script>
 </body>
 </html>
