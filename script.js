@@ -1,3 +1,5 @@
+let history = [];
+
 const prompts = [
   "a futuristic city at sunset",
   "a dragon made of ice flying over mountains",
@@ -9,8 +11,26 @@ const prompts = [
   "a neon cyberpunk street at night"
 ];
 
-let history = [];
+// Load suggestions
+function loadSuggestions() {
+  const container = document.getElementById("suggestions");
 
+  prompts.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "suggestion";
+    div.innerText = p;
+
+    div.onclick = () => {
+      document.getElementById("prompt").value = p;
+    };
+
+    container.appendChild(div);
+  });
+}
+
+loadSuggestions();
+
+// Generate image
 function generateImage() {
   const promptInput = document.getElementById("prompt").value;
   const style = document.getElementById("style").value;
@@ -29,11 +49,9 @@ function generateImage() {
   let url;
 
   if (file) {
-    // image-to-image
     const imageUrl = URL.createObjectURL(file);
     url = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptInput + " " + style)}?image=${encodeURIComponent(imageUrl)}`;
   } else {
-    // text-to-image
     url = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptInput + " " + style)}`;
   }
 
@@ -45,37 +63,7 @@ function generateImage() {
   };
 }
 
-  function loadSuggestions() {
-  const container = document.getElementById("suggestions");
-
-  prompts.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "suggestion";
-    div.innerText = p;
-
-    div.onclick = () => {
-      document.getElementById("prompt").value = p;
-    };
-
-    container.appendChild(div);
-  });
-}
-
-loadSuggestions();
-  const fullPrompt = promptInput + " " + style;
-
-  status.innerText = "Generating...";
-
-  const url = "https://image.pollinations.ai/prompt/" + encodeURIComponent(fullPrompt);
-
-  img.src = url;
-
-  img.onload = () => {
-    status.innerText = "Done!";
-    addToHistory(url);
-  };
-}
-
+// Download
 function downloadImage() {
   const img = document.getElementById("result");
 
@@ -87,6 +75,7 @@ function downloadImage() {
   link.click();
 }
 
+// History
 function addToHistory(url) {
   history.unshift(url);
 
