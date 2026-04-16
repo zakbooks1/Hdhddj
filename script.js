@@ -1,95 +1,64 @@
-let history = [];
+const API_URL = "https://YOUR-WORKER.yourname.workers.dev/generate";
 
-const prompts = [
-  "a futuristic city at sunset",
-  "a dragon made of ice flying over mountains",
-  "a robot cooking in a kitchen",
-  "a cat wearing armor in battle",
-  "a floating island with waterfalls",
-  "a haunted house in the forest",
-  "a spaceship landing on mars",
-  "a neon cyberpunk street at night"
+const ideas = [
+  "a futuristic city at night",
+  "a dragon flying over mountains",
+  "a robot cooking food",
+  "a neon cyberpunk street",
+  "a floating island in the sky"
 ];
 
-// Load suggestions
-function loadSuggestions() {
-  const container = document.getElementById("suggestions");
+// load ideas
+const box = document.getElementById("ideas");
+ideas.forEach(i => {
+  const div = document.createElement("div");
+  div.className = "idea";
+  div.innerText = i;
+  div.onclick = () => document.getElementById("prompt").value = i;
+  box.appendChild(div);
+});
 
-  prompts.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "suggestion";
-    div.innerText = p;
-
-    div.onclick = () => {
-      document.getElementById("prompt").value = p;
-    };
-
-    container.appendChild(div);
-  });
-}
-
-loadSuggestions();
-
-// Generate image
-function generateImage() {
-  const promptInput = document.getElementById("prompt").value;
+async function generate() {
+  const prompt = document.getElementById("prompt").value;
   const style = document.getElementById("style").value;
   const file = document.getElementById("imgUpload").files[0];
 
-  const img = document.getElementById("result");
   const status = document.getElementById("status");
+  const img = document.getElementById("result");
 
-  if (!promptInput && !file) {
-    status.innerText = "Enter prompt or upload image!";
+  if (!prompt && !file) {
+    status.innerText = "Enter prompt or upload image";
     return;
   }
 
   status.innerText = "Generating...";
 
-  let url;
+  let base64 = null;
 
   if (file) {
-    const imageUrl = URL.createObjectURL(file);
-    url = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptInput + " " + style)}?image=${encodeURIComponent(imageUrl)}`;
-  } else {
-    url = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptInput + " " + style)}`;
+    base64 = await toBase64(file);
   }
 
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      prompt: prompt + " " + style,
+      image: base64
+    })
+  });
+
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+
   img.src = url;
-
-  img.onload = () => {
-    status.innerText = "Done!";
-    addToHistory(url);
-  };
+  status.innerText = "Done!";
 }
 
-// Download
-function downloadImage() {
-  const img = document.getElementById("result");
-
-  if (!img.src) return;
-
-  const link = document.createElement("a");
-  link.href = img.src;
-  link.download = "ai-image.png";
-  link.click();
-}
-
-// History
-function addToHistory(url) {
-  history.unshift(url);
-
-  const gallery = document.getElementById("gallery");
-  gallery.innerHTML = "";
-
-  history.slice(0, 10).forEach(src => {
-    const img = document.createElement("img");
-    img.src = src;
-
-    img.onclick = () => {
-      document.getElementById("result").src = src;
-    };
-
-    gallery.appendChild(img);
+function toBase64(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(file);
   });
 }
