@@ -1,20 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AI Image Generator</title>
+  <title>AI Image Generator Pro</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <h1>AI Image Generator</h1>
 
-  <input type="text" id="prompt" placeholder="Enter prompt (e.g. space cat)">
+  <input type="text" id="prompt" placeholder="Describe your image...">
+
+  <select id="style">
+    <option value="">No Style</option>
+    <option value="anime style">Anime</option>
+    <option value="realistic">Realistic</option>
+    <option value="pixel art">Pixel Art</option>
+    <option value="cyberpunk">Cyberpunk</option>
+  </select>
+
   <br>
   <button onclick="generateImage()">Generate</button>
 
   <p id="status"></p>
 
-  <img id="result" />
+  <div class="main">
+    <img id="result">
+    <br>
+    <button onclick="downloadImage()">Download</button>
+  </div>
+
+  <h2>History</h2>
+  <div id="gallery"></div>
 
   <script src="script.js"></script>
 </body>
